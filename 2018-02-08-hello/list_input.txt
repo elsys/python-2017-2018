@@ -1,0 +1,5 @@
+3
+insert 0 1
+insert 0 2
+print
+
