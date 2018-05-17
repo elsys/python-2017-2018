@@ -6,6 +6,9 @@ class Hilbert(object):
 	def __init__(self, step):
 		self.step = step
 		self.pen = turtle.Pen()
+		self.pen.up()
+		self.pen.goto(300, 300)
+		self.pen.down()
 	
 	def a(self, i):
 		if i<=0:
@@ -87,7 +90,7 @@ class Hilbert(object):
 
 if __name__ == "__main__":
 	h = Hilbert(10)
-	h.d(7)
+	h.d(5)
 	
 	
 	input("Press any key")
