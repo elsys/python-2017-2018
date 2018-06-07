@@ -42,6 +42,20 @@ class TestBoard(unittest.TestCase):
 		self.assertEqual(c.row, 1)
 		self.assertEqual(c.col, 4)
 
+	def test_get_neighbour(self):
+		b = self.board
+		c = b[0,0]
+		
+		self.assertIsNone(b.get_neighbour(c, maze.Cell.DOWN))
+		self.assertIsNone(b.get_neighbour(c, maze.Cell.LEFT))
+		c1 = b.get_neighbour(c, maze.Cell.UP)
+		self.assertEqual(c1.col, 0)
+		self.assertEqual(c1.row, 1)
+
+		c1 = b.get_neighbour(c, maze.Cell.RIGHT)
+		self.assertEqual(c1.col, 1)
+		self.assertEqual(c1.row, 0)
+
 		
 
 if __name__ == "__main__":

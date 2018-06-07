@@ -1,8 +1,8 @@
 import turtle
-
+import random
 
 class Cell(object):
-	STEP = 10
+	STEP = 20
 
 	DOWN = 0
 	RIGHT = 1
@@ -14,6 +14,13 @@ class Cell(object):
 		self.col = col
 		self.walls = [True, True, True, True]
 		self.visited = False
+	
+	@staticmethod
+	def oposite_direction(direction):
+		return (direction + 2) % 4
+		
+	def set_visited(self):
+		self.visited = True
 	
 	def has_wall(self, direction):
 		assert self.DOWN <= direction <= self.LEFT
@@ -65,6 +72,59 @@ class Board(object):
 		for c in self.cells:
 			c.draw()
 
+	def get_neighbour(self, cell, direction):
+		assert Cell.DOWN <= direction <= Cell.LEFT
+		if direction == Cell.LEFT:
+			row = cell.row
+			col = cell.col - 1
+		elif direction == Cell.RIGHT:
+			row = cell.row
+			col = cell.col + 1
+		elif direction == Cell.UP:
+			row = cell.row + 1
+			col = cell.col
+		elif direction == Cell.DOWN:
+			row = cell.row -1
+			col = cell.col
+		
+		if row < 0 or row >= self.rows or col < 0 or col >= self.cols:
+			return None
+		
+		return self[row, col]
+
+	def drill_wall(self, cell, direction):
+		neighbour = self.get_neighbour(cell, direction)
+		if neighbour is None:
+			return None
+		
+		cell.drill_wall(direction)
+		neighbour.drill_wall(Cell.oposite_direction(direction))
+		
+		return neighbour
+
+	def get_unvisited_neighbours_directions(self, cell):
+		neighbours = []
+		for direction in range(4):
+			n = self.get_neighbour(cell, direction)
+			if n is None:
+				continue
+			if n.visited:
+				continue
+			neighbours.append(direction)
+		
+		return neighbours
+
+	def generate(self, cell):
+		cell.set_visited()
+		
+		while True:
+			directions = self.get_unvisited_neighbours_directions(cell)
+			if not directions:
+				return
+			direction = random.choice(directions)
+			next = self.drill_wall(cell, direction)
+			self.generate(next)
+
 
 if __name__ == "__main__":
 	
@@ -74,7 +134,10 @@ if __name__ == "__main__":
 	# c = Cell(2,3)
 	# c.drill_wall(Cell.LEFT)
 	# c.draw()
-	b = Board(10, 20)
+	b = Board(10, 10)
+	start = b[0,1]
+	b.generate(start)
+	
 	b.draw()
 
 	input()
